@@ -78,7 +78,7 @@ module Arcenciel
       @min = options[:min] || 0
       @max = options[:max] || 100
 
-      @precision = options[:precision] || 512
+      @precision = options[:precision] || 1024  # 4 * 256
       @mode = options[:mode] || :auto
 
       @on_value   = options[:on_value]   || Proc.new {}
