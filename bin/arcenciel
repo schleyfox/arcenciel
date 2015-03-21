@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+require 'arcenciel'
+
+Arcenciel.run! do
+  encoder do
+    name 'first'
+  end
+
+  encoder do
+    name 'second'
+  end
+end
