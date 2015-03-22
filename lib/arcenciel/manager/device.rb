@@ -40,14 +40,14 @@ module Arcenciel
     end
 
     def start!(server_port)
-      log_info "Adding device (#{id}; #{port})..."
+      log_info "Adding device (#{id}; UDP #{port})..."
       set_destination(server_port)
       @valid = true
       ring_clear_all      
     end
 
     def stop!
-      log_info "Removing device (#{id}; #{port})..."
+      log_info "Removing device (#{id}; UDP #{port})..."
       unassign_control!
       @valid = false
     end
