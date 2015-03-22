@@ -51,7 +51,7 @@ module Arcenciel
       unassign_controller!
       @valid = false
 
-      log_notice "Removed device (#{id}; UDP #{port})."
+      log_warn "Removed device (#{id}; UDP #{port})."
     end
 
     def attach!(controller)

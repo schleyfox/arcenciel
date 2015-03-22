@@ -45,7 +45,7 @@ module Arcenciel
       def unassign!
         @device = nil
         knobs.each(&:unassign!)
-        log_notice "Controller '#{name}' is unassigned."
+        log_warn "Controller '#{name}' is unassigned."
       end
 
       def on_delta(index, delta)

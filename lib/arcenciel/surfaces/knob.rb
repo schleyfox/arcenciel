@@ -204,7 +204,7 @@ module Arcenciel
       end
 
       def wait_for_key
-        STDIN.noecho(&:gets)
+        $stdin.noecho(&:gets)
       end
     end
   end
