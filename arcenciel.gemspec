@@ -10,8 +10,8 @@ Gem::Specification.new do |s|
   s.authors      = ['Nelson Gauthier']
   s.email        = ['nelson.gauthier@gmail.com']
   s.homepage     = 'https://github.com/nelgau/arcenciel'
-  s.summary      = "Monome Arc interface"
-  s.description  = "Tactile load testing for the cloud!"
+  s.summary      = "Declarative Monome Arc microframework"
+  s.description  = "Physical knobs for virtual machines"
 
   s.files        = `git ls-files`.split("\n")
   s.executables  = ['arcenciel-demo']
