@@ -2,11 +2,11 @@
 require 'arcenciel'
 
 Arcenciel.run! do
-  encoder do
-    name 'first'
+  knob do
+    name 'First'
   end
 
-  encoder do
-    name 'second'
+  knob do
+    name 'Second'
   end
 end

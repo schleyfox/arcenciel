@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.description  = "Tactile load testing for the cloud!"
 
   s.files        = `git ls-files`.split("\n")
-  s.test_files   = `git ls-files -- spec/*`.split("\n")
+  s.executables  = ['arcenciel-demo']
   s.require_path = 'lib'
 
   s.add_runtime_dependency 'osc-ruby', '~> 1.1.1'
