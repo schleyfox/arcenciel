@@ -9,7 +9,7 @@ module Arcenciel
     attr_reader :port
     attr_reader :size
 
-    attr_reader :control
+    attr_reader :controller
 
     def initialize(id, type, port)
       @id = id
@@ -18,7 +18,7 @@ module Arcenciel
       @is_arc, @size = parse_type(type)
 
       @valid = false
-      @control = nil
+      @controller = nil
 
       @client = OSC::Client.new('localhost', port)
     end
@@ -28,7 +28,7 @@ module Arcenciel
     end
 
     def attached?
-      !!@control
+      !!@controller
     end
 
     def valid?
@@ -40,21 +40,23 @@ module Arcenciel
     end
 
     def start!(server_port)
-      log_info "Adding device (#{id}; UDP #{port})..."
       set_destination(server_port)
       @valid = true
-      ring_clear_all      
+      ring_clear_all
+
+      log_info "Added device (#{id}; UDP #{port})."
     end
 
     def stop!
-      log_info "Removing device (#{id}; UDP #{port})..."
-      unassign_control!
+      unassign_controller!
       @valid = false
+
+      log_notice "Removed device (#{id}; UDP #{port})."
     end
 
-    def attach!(control)
+    def attach!(controller)
       validate!
-      @control = control
+      @controller = controller
     end
 
     def ring_clear_all
@@ -90,13 +92,13 @@ module Arcenciel
     end
 
     def on_delta(index, delta)
-      @control && @control.on_delta(index, delta)
+      @controller && @controller.on_delta(index, delta)
     end
 
     def on_key(index, state)
-      @control && @control.on_key(index, state)
+      @controller && @controller.on_key(index, state)
     end
-    
+
     private
 
     def set_destination(port)
@@ -105,9 +107,9 @@ module Arcenciel
       @client.send(OSC::Message.new('/sys/port', port))
     end
 
-    def unassign_control!
-      @control && @control.unassign!
-      @control = nil
+    def unassign_controller!
+      @controller && @controller.unassign!
+      @controller = nil
     end
 
     def parse_type(type)

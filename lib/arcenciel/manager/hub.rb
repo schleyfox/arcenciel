@@ -1,3 +1,5 @@
+require 'thread'
+
 module Arcenciel
   class Hub
     attr_reader :serial_port
@@ -15,7 +17,9 @@ module Arcenciel
     end
 
     def run!
-      Thread.start { server.run }
+      Thread.start do
+        server.run
+      end
     end
 
     def send(command)

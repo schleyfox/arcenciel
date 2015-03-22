@@ -1,11 +1,14 @@
 module Arcenciel
   module Logging
-
     def log_info(string)
-      log_with_tag(string, 'ARC', :yellow)
+      log_with_tag(string, 'ARC', :blue)
     end
 
-    def log_error
+    def log_notice(string)
+      log_with_tag(string, 'NOTICE', :red)
+    end
+
+    def log_error(string)
       log_with_tag(string, 'ERROR', :red)
     end
 
@@ -15,6 +18,5 @@ module Arcenciel
       colored_tag = Colored.colorize(tag, foreground: color)
       puts '[' + colored_tag + '] ' + string
     end
-
   end
 end

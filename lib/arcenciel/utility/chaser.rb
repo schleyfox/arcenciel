@@ -1,3 +1,5 @@
+require 'thread'
+
 module Arcenciel
   class Chaser
     MAX_LEVEL = 13

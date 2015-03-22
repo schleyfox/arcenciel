@@ -7,15 +7,15 @@ module Arcenciel
   class Manager
     include Logging
 
-    attr_reader :controls
+    attr_reader :controllers
     attr_reader :devices
 
-    def self.run!(controls)
-      new(controls).run!
+    def self.run!(controllers)
+      new(controllers).run!
     end
 
-    def initialize(controls)
-      @controls = controls
+    def initialize(controllers)
+      @controllers = controllers
 
       @hub = Hub.new
       @mutex = Mutex.new
@@ -23,10 +23,6 @@ module Arcenciel
 
       @id_map = {}
       @port_map = {}
-    end
-
-    def devices
-      @id_map.values
     end
 
     def run!
@@ -64,15 +60,19 @@ module Arcenciel
       end
     end
 
+    def devices
+      @id_map.values
+    end
+
     def assign_devices
       devices.each do |device|
         next if device.attached?
         begin
-          if control = controls.first(&:assigned?)
-            control.assign!(device)
+          if controller = controllers.first(&:assigned?)
+            controller.assign!(device)
           end
         rescue Device::InvalidDeviceError
-          control.unassign!
+          controller.unassign!
         end
       end
     end
