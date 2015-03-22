@@ -111,9 +111,10 @@ module Arcenciel
     end
 
     def confirm!
-      ring_on
+      start_chaser
       log_info "Illuminated encoder '#{name}' (#{index}). Press any key."
       STDIN.noecho(&:gets)
+      stop_chaser
       ring_clear
     end
 
@@ -139,6 +140,10 @@ module Arcenciel
 
     private
 
+    def default_name
+      'unnamed'
+    end
+
     def apply_delta(delta)
       @counter += delta
       clamp_counter
@@ -151,42 +156,54 @@ module Arcenciel
       @counter = precision if @counter > precision
     end
 
+    def fraction_for_counter(x)
+      x / precision.to_f
+    end
+
+    def value_for_counter(x)
+      f = fraction_for_counter(x)
+      (max - min) * f + min
+    end
+
+    def counter_for_value(x)
+      ((x - min) / (max - min).to_f * precision.to_f).to_i
+    end
+
     def update_value
       @value = value_for_counter(counter)
     end
 
     def update_ring
-      fractional_leds = 64 * (counter / precision.to_f)
-
-      full_count = fractional_leds.to_i
-      final_level = (15 * [(fractional_leds - full_count), 1].min).to_i
-
-      levels = []
-      (0...full_count).each { levels << 15 }
-      levels << final_level if levels.size < 64
-      (levels.size...64).each { levels << 0 }
-
-      device.ring_map(index, levels)
+      f = fraction_for_counter(counter)
+      ring_fraction(f)
     end
 
     def ring_clear
       device.ring_clear(index)
     end
 
-    def ring_on
-      device.ring_all(index, 15)
+    def ring_fraction(x)
+      units = 64 * x
+      count = units.to_i
+      subpixel = units - units.to_i
+      final_level = (15 * subpixel).to_i
+
+      levels = []
+      (0...count).each { levels << 15 }
+      levels << final_level if levels.size < 64
+      (levels.size...64).each { levels << 0 }
+
+      device.ring_map(index, levels)
     end
 
-    def counter_for_value(value)
-      ((value - min) / (max - min).to_f * precision.to_f).to_i
+    def start_chaser
+      @chaser = Chaser.new(device, index)
+      @chaser.start!
     end
 
-    def value_for_counter(counter)
-      (max - min) * (counter / precision.to_f) + min
-    end
-
-    def default_name
-      'unnamed'
+    def stop_chaser
+      @chaser.stop!
+      @chaser = nil
     end
   end
 end
