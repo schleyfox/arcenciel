@@ -1,4 +1,5 @@
 require 'arcenciel/surfaces/controller'
+require 'arcenciel/surfaces/base_knob'
 require 'arcenciel/surfaces/knob'
 
 module Arcenciel
@@ -15,10 +16,13 @@ module Arcenciel
 
         # Add a new logical knob (encoder) to the controller.
         def knob(&blk)
-          opts[:knobs] ||= []
-          opts[:knobs] << Knob.from_dsl(&blk)
+          base_knob(Knob.from_dsl(&blk))
         end
 
+        def base_knob(knob)
+          opts[:knobs] ||= []
+          opts[:knobs] << knob
+        end
       end
 
     end

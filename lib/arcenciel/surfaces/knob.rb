@@ -1,8 +1,8 @@
-require 'io/console'
+require 'arcenciel/surfaces/base_knob'
 
 module Arcenciel
   module Surfaces
-    class Knob
+    class Knob < BaseKnob
       include Logging
 
       DEFAULT_OPTIONS = {
@@ -18,10 +18,6 @@ module Arcenciel
       attr_reader :type
       attr_reader :sweep
 
-      attr_reader :on_value
-      attr_reader :on_push
-      attr_reader :on_release
-
       attr_reader :value
       attr_reader :counter
       attr_reader :precision
@@ -36,6 +32,7 @@ module Arcenciel
       end
 
       def initialize(options)
+        super()
         options = DEFAULT_OPTIONS.merge(options)
 
         @name       = options[:name]
@@ -54,11 +51,8 @@ module Arcenciel
 
         @precision  = precision_for_sweep(sweep)
         @counter    = counter_for_value(@value)
-        @depressed  = false
 
         @context = Context.new(self)
-        @device = nil
-        @index = nil
 
         clamp_counter
         update_value
@@ -69,20 +63,6 @@ module Arcenciel
         integer_type? ?
           value.to_i :
           value.to_f
-      end
-
-      def assigned?
-        !!@device
-      end
-
-      def assign!(device, index)
-        @device = device
-        @index = index
-      end
-
-      def unassign!
-        @device = nil
-        @index = nil
       end
 
       def confirm!
@@ -106,17 +86,6 @@ module Arcenciel
         update_value
         update_ring
         trigger_value
-      end
-
-      def on_key(state)
-        case state
-        when 0
-          @depressed = false
-          trigger_release
-        when 1
-          @depressed = true
-          trigger_push
-        end
       end
 
       private
@@ -161,22 +130,18 @@ module Arcenciel
       end
 
       def trigger_value
-        on_value &&
-          context.instance_exec(typed_value, &on_value)
+        @on_value &&
+          context.instance_exec(typed_value, &@on_value)
       end
 
-      def trigger_push
-        on_push &&
-          context.instance_exec(&on_push)
+      def on_push
+        @on_push &&
+          context.instance_exec(&@on_push)
       end
 
-      def trigger_release
-        on_release &&
-          context.instance_exec(&on_release)
-      end
-
-      def ring_clear
-        device.ring_clear(index)
+      def on_release
+        @on_release &&
+          context.instance_exec(&@on_release)
       end
 
       def ring_fraction(x)
